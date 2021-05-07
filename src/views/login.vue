@@ -136,7 +136,8 @@
     justify-content: center;
     align-items: center;
     height: 100%;
-    background-color: lightgrey;
+    background-image: url("../assets/images/login-background.jpg");
+    background-size: cover;
     text-align: left;
 
     .login-form {

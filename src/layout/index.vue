@@ -3,8 +3,10 @@
     <el-aside :width="sideMenuCollapsed ? '64px' : '200px'" class="sidebar">
 
       <h4 class="logo">
-        <img src="../assets/logo.png" height="32" width="32" style="position: relative; top: 8px">
-        {{sideMenuCollapsed ? '' : '后台管理系统'}}
+        <img src="../assets/logo.png" height="32" width="32" style="margin: 0px 8px">
+        <transition name="sidebarLogoFade">
+          <span v-if="!sideMenuCollapsed">后台管理系统</span>
+        </transition>
       </h4>
       <el-scrollbar class="side-menu" wrap-style="overflow-x:hidden;">
         <el-menu background-color="#545c64"
@@ -145,6 +147,15 @@
 
 <style lang="scss" scoped>
 
+  .sidebarLogoFade-enter-active {
+    transition: opacity 1.5s;
+  }
+
+  .sidebarLogoFade-enter,
+  .sidebarLogoFade-leave-to {
+    opacity: 0;
+  }
+
   .sidebar {
     height: 100%;
     background-color: #545c64;
@@ -155,6 +166,9 @@
       line-height: 50px;
       color: #fff;
       margin: 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     .side-menu {
