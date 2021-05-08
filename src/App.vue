@@ -40,4 +40,18 @@
   .el-form-item__label {
     font-weight: bold;
   }
+
+
+  /* Icon-Font (et-xxx) */
+  [class*=" et-"], [class^=et-] {
+    display: inline-block;
+  }
+
+  .el-submenu [class^=et-] {
+    vertical-align: middle;
+    margin-right: 5px;
+    width: 24px;
+    text-align: center;
+    font-size: 18px;
+  }
 </style>
