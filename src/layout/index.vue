@@ -61,26 +61,33 @@
         <!--<el-button :icon="sideMenuCollapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
                    @click="sideMenuCollapsed = !sideMenuCollapsed"
                    style="border: none; height: 50px; font-size: 20px;"></el-button>-->
-        <div
-            style="width: 50px; height: 50px; padding-top: 15px; text-align: center; cursor: pointer; display: inline-block ">
-          <i :class="sideMenuCollapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'" style="font-size: 20px;"
-             @click="sideMenuCollapsed = !sideMenuCollapsed"></i>
-        </div>
+        <a class="fold-button" @click="sideMenuCollapsed = !sideMenuCollapsed">
+          <i :class="sideMenuCollapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></i>
+        </a>
 
-        <el-breadcrumb separator-class="el-icon-arrow-right" style="display: inline-block;">
+        <el-breadcrumb separator-class="el-icon-arrow-right">
           <el-breadcrumb-item v-for="item in breadcrumbTitle($route.path)" :key="item">{{item}}</el-breadcrumb-item>
         </el-breadcrumb>
 
-        <el-dropdown style="float: right; line-height: 50px" trigger="click" @command="handleCommand">
+        <div class="right-menu">
+          <a class="right-menu-item hover-effect" @click="toggleScreen" style="padding: 0px 8px;">
+            <i :class="screenIconClass"></i>
+          </a>
+
+          <el-dropdown class="right-menu-item" trigger="click" @command="handleCommand">
           <span class="el-dropdown-link">
             {{nickname}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item command="user-center">个人中心</el-dropdown-item>
-            <el-dropdown-item command="logout">退出登录</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+            <el-dropdown-menu slot="dropdown">
+              <!--<el-dropdown-item command="user-center">个人中心</el-dropdown-item>-->
+              <el-dropdown-item command="logout">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
+
       </el-header>
+
+
       <el-main style="">
         <transition name="fade-transform" mode="out-in">
           <router-view/>
@@ -94,6 +101,7 @@
   import {mapGetters} from 'vuex'
   import SideMenuItem from "./components/SideMenuItem"
   import logoImg from '@/assets/logo.png'
+  import screenfull from 'screenfull'
 
   export default {
     name: "index",
@@ -101,7 +109,8 @@
     data: function () {
       return {
         sideMenuCollapsed: false,
-        logoImg: logoImg
+        logoImg: logoImg,
+        screenIconClass: screenfull.isFullscreen ? 'ei-collapse-full' : 'ei-expand-full'
       }
     },
     computed: {
@@ -128,6 +137,14 @@
             // this.$router.push('/')
           })
         }
+      },
+      toggleScreen() {
+        if (!screenfull.isEnabled) {
+          this.$message.warning('你的浏览器不支持全屏')
+          return false
+        }
+        screenfull.toggle()
+        this.screenIconClass = screenfull.isFullscreen ? 'ei-expand-full' : 'ei-collapse-full'
       }
     },
     mounted() {
@@ -184,6 +201,49 @@
     /*background-color: rgb(240, 242, 245);*/
     background-color: #fff;
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, .12), 0 0 3px 0 rgba(0, 0, 0, .04);
+
+    .fold-button {
+      display: inline-block;
+      vertical-align: middle;
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      cursor: pointer;
+
+
+      &:hover {
+        background: rgba(0, 0, 0, .025)
+      }
+
+      i {
+        font-size: 20px;
+        line-height: 50px;
+        /*margin-top: 15px;*/
+      }
+    }
+
+    .el-breadcrumb {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 50px;
+    }
+
+    .right-menu {
+      float: right;
+
+      .right-menu-item {
+        display: inline-block;
+        line-height: 50px;
+
+        &.hover-effect {
+          cursor: pointer;
+
+          &:hover {
+            background: rgba(0, 0, 0, .025)
+          }
+        }
+      }
+    }
   }
 
   .el-main {

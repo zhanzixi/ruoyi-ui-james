@@ -7,7 +7,7 @@ function build(data, id, parentId, children, rootId) {
 
   let treeData = data.filter(item => item[parentId] === rootId)
   treeData.forEach(item => {
-    item[children] = build(data, id, parentId, children, item.id)
+    item[children] = build(data, id, parentId, children, item[id])
   })
   return treeData
 }
@@ -23,8 +23,9 @@ export function buildBreadcrumbMap(data, key, value, id, parentId, arrTitle, roo
 
   function buildBreadcrumb(data, key = 'path', value = 'name', id = 'id', parentId = 'parentId', arrTitle = [], rootId = 0) {
     data.filter(item => item[parentId] === rootId).forEach(item => {
-      map.set(item.path, arrTitle.concat([item.name]))
-      buildBreadcrumb(data, key, value, id, parentId, arrTitle.concat([item.name]), item.id)
+      let arrValue = arrTitle.concat([item[value]])
+      map.set(item[key], arrValue)
+      buildBreadcrumb(data, key, value, id, parentId, arrValue, item[id])
     })
   }
 
