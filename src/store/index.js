@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import {buildTree} from '@/utils/james'
 import user from './modules/user'
+import tagView from './modules/tagView'
 
 Vue.use(Vuex)
 
@@ -32,6 +33,7 @@ export default new Vuex.Store({
     treeMenuList: state => buildTree(state.userInfo.menuList)
   },*/
   modules: {
-    user
+    user,
+    tagView
   }
 })

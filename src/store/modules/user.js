@@ -39,6 +39,14 @@ export default {
     breadcrumbTitle: state => path => {
       let m = buildBreadcrumbMap(state.menuList)
       return m.get(path) ? m.get(path) : []
+    },
+    menuName: state => path => {
+      for (const menu of state.menuList) {
+        if (menu.path == path) {
+          return menu.name
+        }
+      }
+      return undefined
     }
   },
 }

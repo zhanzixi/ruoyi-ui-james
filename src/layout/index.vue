@@ -87,18 +87,38 @@
 
       </el-header>
 
-
-      <el-main style="">
+      <!--<el-main style="">
+        <div style="margin-bottom: 20px">
+          <el-tag v-for="tag in dynamicTags" :key="tag" closable :disable-transitions="true" style="cursor: pointer"
+                  @close="handleCloseTag(tag)" @click="handleClickTag(tag)">{{tag}}
+          </el-tag>
+        </div>
         <transition name="fade-transform" mode="out-in">
           <router-view/>
         </transition>
-      </el-main>
+      </el-main>-->
+
+      <el-container>
+        <el-header style="height: 30px; text-align: left; padding-left: 10px" class="header">
+          <el-tag v-for="tag in tagViews" :key="tag" closable :disable-transitions="false" effect="plain"
+                  style="cursor: pointer; margin: 3px" size="small" :type="currentTagView == tag ? '' : 'info'"
+                  @close="handleCloseTag(tag)" @click="handleClickTag(tag)">
+            {{menuName(tag)}}
+          </el-tag>
+        </el-header>
+        <el-main>
+          <transition name="fade-transform" mode="out-in">
+            <router-view/>
+          </transition>
+        </el-main>
+      </el-container>
+
     </el-container>
   </el-container>
 </template>
 
 <script>
-  import {mapGetters} from 'vuex'
+  import {mapGetters, mapMutations} from 'vuex'
   import SideMenuItem from "./components/SideMenuItem"
   import logoImg from '@/assets/logo.png'
   import screenfull from 'screenfull'
@@ -114,13 +134,14 @@
       }
     },
     computed: {
-      ...mapGetters(['nickname', 'treeMenuList', 'breadcrumbTitle'])
+      ...mapGetters(['nickname', 'treeMenuList', 'breadcrumbTitle', 'tagViews', 'currentTagView', 'menuName'])
     },
     methods: {
       menuSelect(index, indexPath, item) {
         // console.log(index, indexPath, item)
         if (index !== this.$route.fullPath) {
           this.$router.push(index)
+          this.addTag(index)
         }
       },
       handleCommand(command) {
@@ -145,7 +166,20 @@
         }
         screenfull.toggle()
         this.screenIconClass = screenfull.isFullscreen ? 'ei-expand-full' : 'ei-collapse-full'
-      }
+      },
+      handleCloseTag(tag) {
+        this.delTag(tag)
+        if (this.currentTagView) {
+          this.$router.push(this.currentTagView)
+          this.$refs['sideMenu'].updateActiveIndex(this.currentTagView)
+        }
+      },
+      handleClickTag(tag) {
+        this.addTag(tag)
+        this.$router.push(this.currentTagView)
+        this.$refs['sideMenu'].updateActiveIndex(this.currentTagView)
+      },
+      ...mapMutations(['addTag', 'delTag'])
     },
     mounted() {
       /*console.log(this.$route.path, this.treeMenuList)
@@ -157,6 +191,7 @@
       window.setTimeout(() => {
         // console.log(this.$route.path, this.treeMenuList)
         this.$refs['sideMenu'].updateActiveIndex(this.$route.path)
+        this.addTag(this.$route.path)
       }, 300)
     }
   }
